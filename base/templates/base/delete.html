@@ -1,0 +1,16 @@
+<!-- Let's extends the delete funionality-->
+{% extends 'base/main.html' %}
+
+<!-- Populate the block -->
+{% block content %}
+    <form action="" method="POST">
+        <!-- csrf_token must be added for all the forms -->
+        {% csrf_token %}
+        <p>
+            Are you sure you want to delete this "{{obj}}"
+        </p>
+        <!-- Send user back to the link they come from -->
+        <a href="{{request.META.HTTP_REFRER}}">Go Back</a>
+        <input type="submit" value="Confirm">
+    </form>
+{% endblock content %}

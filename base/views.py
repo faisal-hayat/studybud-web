@@ -36,3 +36,30 @@ def create_room(request):
         'form': form
     }
     return render(request, 'base/room_form.html', context)
+
+
+# Creaet view for updating the room 
+def updateRoom(request, pk):
+    room = Room.objects.get(id=pk)
+    # Create the form objec 
+    form = RoomForm(instance=room) # This line will fill the form with data that we have in our database and it belong the object we are showing
+    if request.method == "POST":
+        f = RoomForm(request.POST, instance=room)
+        if f.is_valid():
+            # Save the form and redirect it to the main page
+            f.save()
+            return redirect('/base/')
+    context = {
+        'form': form
+    }
+    return render(request, 'base/room_form.html', context)
+
+def deleteRoom(request, pk):
+    room = Room.objects.get(id=int(pk))
+    if request.method == "POST":
+        room.delete()
+        return redirect('/base/')
+    context = {
+        'obj': room
+    }
+    return render(request, 'base/delete.html', context)

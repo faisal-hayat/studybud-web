@@ -12,18 +12,29 @@
         <!-- For loop over all of the  -->
         <div>
             {% for room in rooms %}
+
                 <div>
+                    
                     <a href="{% url 'base:room' room.id %}"> {{ room.name }} </a>
                     <br>
                     <span>@{{ room.host.username }}</span>
                     <small>{{ room.topic.name }}</small>
                     <br>
-                    <small>Topic : {{ room.topic.name }}</small>
+
+                    <small>
+                        Topic : {{ room.topic.name }}
+                        <em>
+                            <a href="{% url 'base:update-room' room.id %}">Edit</a>
+                        </em>
+                        <!-- Let's enter the delete button -->
+                        <a href="{% url 'base:delete-room' room.id %}">Delete</a>
+                    </small>
                 </div>
+
             {% endfor %}
         </div>
-        
     {% else %}
         <h1>No Room has been added</h1>
     {% endif %}
+
 {% endblock content %}
