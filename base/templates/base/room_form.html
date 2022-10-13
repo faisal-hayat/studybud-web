@@ -1,0 +1,14 @@
+{% extends 'base/main.html' %}
+
+<!--make changes to the block -->
+{% block content %}
+    <div>
+        <form action="" method="post">
+            <!-- Add csrf token -->
+            {% csrf_token %}
+                <!-- Dsiplay the form -->
+            {{ form.as_p }}
+            <input type="submit" value="Submit">
+        </form>
+    </div>    
+{% endblock content %}

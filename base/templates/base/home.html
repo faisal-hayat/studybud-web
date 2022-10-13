@@ -1,0 +1,29 @@
+<!-- Extends the main page -->
+{% extends 'base/main.html' %}
+
+<!-- Extending templates is a lot more cleaner approach -->
+<!-- Starts content block -->
+{% block content %}
+    <!-- Create room link -->
+    <a href="{% url 'base:create-room' %}">Create Room</a>    
+    <hr>
+    <!-- Show list of rooms -->
+    {% if rooms %}
+        <!-- For loop over all of the  -->
+        <div>
+            {% for room in rooms %}
+                <div>
+                    <a href="{% url 'base:room' room.id %}"> {{ room.name }} </a>
+                    <br>
+                    <span>@{{ room.host.username }}</span>
+                    <small>{{ room.topic.name }}</small>
+                    <br>
+                    <small>Topic : {{ room.topic.name }}</small>
+                </div>
+            {% endfor %}
+        </div>
+        
+    {% else %}
+        <h1>No Room has been added</h1>
+    {% endif %}
+{% endblock content %}
