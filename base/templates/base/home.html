@@ -4,37 +4,62 @@
 <!-- Extending templates is a lot more cleaner approach -->
 <!-- Starts content block -->
 {% block content %}
-    <!-- Create room link -->
-    <a href="{% url 'base:create-room' %}">Create Room</a>    
-    <hr>
-    <!-- Show list of rooms -->
-    {% if rooms %}
-        <!-- For loop over all of the  -->
+
+    <div class="home-container">
+        <!-- Adding sidebar -->
         <div>
-            {% for room in rooms %}
-
-                <div>
-                    
-                    <a href="{% url 'base:room' room.id %}"> {{ room.name }} </a>
-                    <br>
-                    <span>@{{ room.host.username }}</span>
-                    <small>{{ room.topic.name }}</small>
-                    <br>
-
-                    <small>
-                        Topic : {{ room.topic.name }}
-                        <em>
-                            <a href="{% url 'base:update-room' room.id %}">Edit</a>
-                        </em>
-                        <!-- Let's enter the delete button -->
-                        <a href="{% url 'base:delete-room' room.id %}">Delete</a>
-                    </small>
-                </div>
-
-            {% endfor %}
+            <!-- Sidebar -->
+            <h3>
+                Browse Topics
+            </h3>
+            <hr>
+            <!-- Get back to all pages -->
+            <div>
+                <a href="{% url 'base:home' %}">All</a>
+            </div>
+            <!-- Let's browse through the topics -->
+            {% if topics %}
+                {% for topic in topics %}
+                    <div>
+                        <a href="{% url 'base:home' %}?q={{topic.name}}">{{ topic.name }}</a>
+                    </div>
+                {% endfor %}
+            {% endif %}
         </div>
-    {% else %}
-        <h1>No Room has been added</h1>
-    {% endif %}
+        
+        <!-- Show list of rooms -->
+        <div>
+            <h5>{{room_count}} rooms available</h5>
+            <!-- Create room link -->
+            <a href="{% url 'base:create-room' %}">Create Room</a>    
+            <hr>
+            {% if rooms %}
+            <!-- For loop over all of the  -->
+                {% for room in rooms %}
+
+                    <div>
+                        <a href="{% url 'base:room' room.id %}"> {{ room.name }} </a>
+                        <br>
+                        <span>@{{ room.host.username }}</span>
+                        <small>{{ room.topic.name }}</small>
+                        <br>
+                        <small>
+                            Topic : {{ room.topic.name }}
+                            <em>
+                                <a href="{% url 'base:update-room' room.id %}">Edit</a>
+                            </em>
+                            <!-- Let's enter the delete button -->
+                            <a href="{% url 'base:delete-room' room.id %}">Delete</a>
+                            <hr>
+                        </small>
+                    </div>
+
+                {% endfor %}    
+            {% else %}
+                <h1>No Room has been added</h1>
+            {% endif %}
+        </div>
+
+    </div>
 
 {% endblock content %}

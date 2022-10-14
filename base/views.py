@@ -1,14 +1,32 @@
 # imports 
-from .models import Room
 from .forms import RoomForm
+from .models import Room, Topic
+from django.db.models import Q
 from django.shortcuts import redirect, render, get_object_or_404
 
 
 # Create your views here.
 def home(request):
-    rooms = Room.objects.all()[:5]
+    # Get quesry set value from the request once user has clicked on any topic name
+    # q = request.GET.get('q') if request.GET.get('q') != None else ''
+    if request.GET.get('q') != None:
+        q = request.GET.get('q')
+    else:
+        q = ''
+
+    rooms = Room.objects.filter(
+        Q(topic__name__icontains=q) | 
+        Q(name__icontains=q) |
+        Q(description__icontains=q))
+    # Calculate the room count 
+    room_count = rooms.count()
+
+    # Let's browser all the topics
+    topics = Topic.objects.all()[:10]
     context = {
-        'rooms': rooms
+        'rooms': rooms,
+        'topics': topics,
+        'room_count': room_count
     }
     return render(request, 'base/home.html', context)
 
@@ -63,3 +81,5 @@ def deleteRoom(request, pk):
         'obj': room
     }
     return render(request, 'base/delete.html', context)
+
+
