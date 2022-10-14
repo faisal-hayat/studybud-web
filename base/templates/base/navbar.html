@@ -8,4 +8,13 @@
     <form action="{% url 'base:home' %}" method="GET">
         <input type="text" name="q" placeholder="Search Rooms...">
     </form>
+
+    <!-- Displaying the logout button -->
+    {% if request.user.is_authenticated %}
+        <!-- Display the logout button -->
+        <a href="{% url 'base:login' %}">Logout</a>    
+    {% else %}
+        <a href="{% url 'base:login' %}">Login</a>
+    {% endif %}
+    
 </html>

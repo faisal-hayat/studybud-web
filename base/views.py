@@ -1,10 +1,13 @@
 # imports 
 from .forms import RoomForm
-from .models import Room, Topic
 from django.db.models import Q
+from .models import Room, Topic
+from django.contrib import messages
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect, render, get_object_or_404
 
-
+# ------------------------------------------------------------------------ #
 # Create your views here.
 def home(request):
     # Get quesry set value from the request once user has clicked on any topic name
@@ -36,7 +39,7 @@ def room(request, pk):
         'room': room
     }
     return render(request, 'base/room.html', context)
-
+# ------------------------------------------------------------------------ #
 # Function for creating the room
 def create_room(request):
     # Room forms will be used here
@@ -54,8 +57,7 @@ def create_room(request):
         'form': form
     }
     return render(request, 'base/room_form.html', context)
-
-
+# ------------------------------------------------------------------------ #
 # Creaet view for updating the room 
 def updateRoom(request, pk):
     room = Room.objects.get(id=pk)
@@ -71,7 +73,7 @@ def updateRoom(request, pk):
         'form': form
     }
     return render(request, 'base/room_form.html', context)
-
+# ------------------------------------------------------------------------ #
 def deleteRoom(request, pk):
     room = Room.objects.get(id=int(pk))
     if request.method == "POST":
@@ -81,5 +83,28 @@ def deleteRoom(request, pk):
         'obj': room
     }
     return render(request, 'base/delete.html', context)
-
-
+# ------------------------------------------------------------------------ #
+def loginPage(request):
+    if request.method == 'POST':
+        username = request.POST.get('name')
+        password = request.POST.get('password')
+        # Use try catch block 
+        try:
+            user = User.objects.get(username)
+            
+        except:
+            # Throw the error message that user does not exit
+            messages.error(request, 'user does not exist')
+        user = authenticate(request=request, username=username,
+                    password=password)
+        if user is not None:
+            login(request, user)
+            # Redirect the user 
+            return redirect('/base/')
+        else:
+            messages.error(request, 'user credential are not correct')
+    context = {
+        
+    }
+    return render(request, 'base/login_register.html', context)
+# ------------------------------------------------------------------------ #

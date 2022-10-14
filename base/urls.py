@@ -12,6 +12,8 @@ urlpatterns = [
     path('create-room/', view=views.create_room, name='create-room'),
     # ex: /base/update-roon/1
     path('update-room/<str:pk>', view=views.updateRoom, name='update-room'),
-
+    # ex: /base/delete-roon/1
     path('delete-room/<str:pk>', view=views.deleteRoom, name='delete-room'),
+    # ex: base/login
+    path('login/', view=views.loginPage, name='login')
 ]

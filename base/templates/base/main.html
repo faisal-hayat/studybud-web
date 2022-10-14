@@ -18,7 +18,18 @@
         <!-- Add Navbar for every page -->
         {% include 'base/navbar.html' %}
             <!-- Create blocks that will be inherited later on -->
-        
+            
+        <!-- Messages -->
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if messsage.tags %} class="{{ message.tags }}" {% endif %}>
+                        {{ message }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
         {% block content %} 
             <!-- This block is for content displaying -->
         {% endblock %}
