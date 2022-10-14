@@ -2,15 +2,32 @@
 
 <!-- Extends the block -->
 {% block content %}
-    <div>
-        <!-- form for registration or authentication -->
-        <form action="" method="POST">
-            {% csrf_token %}
-            <label for="">Username</label>
-            <input type="text" name="username" placeholder="Enter Username">
-            <label for="">Password</label>
-            <input type="password" name="password" placeholder="Enter password">
-            <input type="submit" value="Login">
-        </form>
-    </div>
+    {% if page == 'login' %}
+        <div>
+            <!-- form for login -->
+            <form action="" method="POST">
+                {% csrf_token %}
+                <label for="">Username</label>
+                <input type="text" name="username" placeholder="Enter Username">
+                <label for="">Password</label>
+                <input type="password" name="password" placeholder="Enter password">
+                <input type="submit" value="Login">
+            </form>
+            <p>haven't signed up yet?</p>
+            <a href="{% url 'base:register' %}">Signup</a>
+        </div>
+    {% else %}
+        <!-- For signup -->
+        <div>
+            <!-- form for registration or authentication -->
+            <form action="" method="POST">
+                {% csrf_token %}
+                <!-- auto generate form field -->
+                {{ form.as_p }}
+                <input type="submit" value="Register">
+            </form>
+            <p>Already signed up </p>
+            <a href="{% url 'base:login' %}">Login</a>
+        </div>
+    {% endif %}
 {% endblock content %}

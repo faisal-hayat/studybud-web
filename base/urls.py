@@ -1,3 +1,4 @@
+from atexit import register
 from . import views
 from django.urls import path
 
@@ -17,5 +18,7 @@ urlpatterns = [
     # ex: base/login
     path('login/', view=views.loginPage, name='login'),
     # ex: base/logout
-    path('logout/', view=views.logoutUser, name='logout')
+    path('logout/', view=views.logoutUser, name='logout'),
+    # ex: base/register
+    path('register/', view=views.registerPage, name='register')
 ]

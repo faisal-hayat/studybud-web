@@ -1,10 +1,10 @@
 # imports 
-from cgitb import reset
 from .forms import RoomForm
 from django.db.models import Q
 from .models import Room, Topic
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import HttpResponse, redirect, render, get_object_or_404
@@ -100,11 +100,12 @@ def deleteRoom(request, pk):
     return render(request, 'base/delete.html', context)
 # ------------------------------------------------------------------------ #
 def loginPage(request):
-    if request.user.is_authenticated():
+    page = 'login'
+    if request.user.is_authenticated:
         return redirect('/base/')
 
     if request.method == 'POST':
-        username = request.POST.get('username')
+        username = request.POST.get('username').lower()
         password = request.POST.get('password')
         print(f'username is : {username}, and size is : {len(username)}, password is : {password}')
         # Use try catch block 
@@ -123,11 +124,32 @@ def loginPage(request):
             # Throw the error message that user does not exit
             messages.error(request, 'user does not exist')
     context = {
-        
+        'page': page
     }
     return render(request, 'base/login_register.html', context)
 # ------------------------------------------------------------------------ #
 def logoutUser(request):
     logout(request) # This will delete the session token for the user
     return redirect('/base/')
+# ------------------------------------------------------------------------ #
+def registerPage(request):
+    form = UserCreationForm()
+    # Let's process the form
+    if request.method == 'POST':
+        f = UserCreationForm(request.POST)
+        if f.is_valid():
+            # save the form and freeze the user
+            user = f.save(commit=False)
+            user.username = user.username.lower()
+            user.save()
+            # login the user
+            login(request, user=user)
+            # redirect the user
+            return redirect('/base/')
+        else:
+            messages.error(request, 'Something went wrong, please try again')
+    context = {
+        'form': form
+    }
+    return render(request, 'base/login_register.html', context)
 # ------------------------------------------------------------------------ #
