@@ -1,11 +1,13 @@
 # imports 
+from cgitb import reset
 from .forms import RoomForm
 from django.db.models import Q
 from .models import Room, Topic
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import HttpResponse, redirect, render, get_object_or_404
 
 # ------------------------------------------------------------------------ #
 # Create your views here.
@@ -41,6 +43,7 @@ def room(request, pk):
     return render(request, 'base/room.html', context)
 # ------------------------------------------------------------------------ #
 # Function for creating the room
+@login_required(login_url='base:login')
 def create_room(request):
     # Room forms will be used here
     form = RoomForm()
@@ -59,9 +62,15 @@ def create_room(request):
     return render(request, 'base/room_form.html', context)
 # ------------------------------------------------------------------------ #
 # Creaet view for updating the room 
+@login_required(login_url='base:login')
 def updateRoom(request, pk):
     room = Room.objects.get(id=pk)
-    # Create the form objec 
+    
+    # Only the creator of room can delete the room
+    if request.user != room.host:
+        return HttpResponse('You cant change the room content')
+
+    # Create the form object 
     form = RoomForm(instance=room) # This line will fill the form with data that we have in our database and it belong the object we are showing
     if request.method == "POST":
         f = RoomForm(request.POST, instance=room)
@@ -74,8 +83,14 @@ def updateRoom(request, pk):
     }
     return render(request, 'base/room_form.html', context)
 # ------------------------------------------------------------------------ #
+@login_required(login_url='base:login')
 def deleteRoom(request, pk):
     room = Room.objects.get(id=int(pk))
+
+    # Only the creator of room can delete the room
+    if request.user != room.host:
+        return HttpResponse('You cant change the room content')
+
     if request.method == "POST":
         room.delete()
         return redirect('/base/')
@@ -85,26 +100,34 @@ def deleteRoom(request, pk):
     return render(request, 'base/delete.html', context)
 # ------------------------------------------------------------------------ #
 def loginPage(request):
+    if request.user.is_authenticated():
+        return redirect('/base/')
+
     if request.method == 'POST':
-        username = request.POST.get('name')
+        username = request.POST.get('username')
         password = request.POST.get('password')
+        print(f'username is : {username}, and size is : {len(username)}, password is : {password}')
         # Use try catch block 
         try:
-            user = User.objects.get(username)
-            
+            user = User.objects.get(username=username)
+            user = authenticate(request,
+                    username=username,
+                    password=password)
+            if user is not None:
+                login(request, user)
+                # Redirect the user 
+                return redirect('/base/')
+            else:
+                messages.error(request, 'user credential are not correct')
         except:
             # Throw the error message that user does not exit
             messages.error(request, 'user does not exist')
-        user = authenticate(request=request, username=username,
-                    password=password)
-        if user is not None:
-            login(request, user)
-            # Redirect the user 
-            return redirect('/base/')
-        else:
-            messages.error(request, 'user credential are not correct')
     context = {
         
     }
     return render(request, 'base/login_register.html', context)
+# ------------------------------------------------------------------------ #
+def logoutUser(request):
+    logout(request) # This will delete the session token for the user
+    return redirect('/base/')
 # ------------------------------------------------------------------------ #

@@ -36,7 +36,6 @@
             {% if rooms %}
             <!-- For loop over all of the  -->
                 {% for room in rooms %}
-
                     <div>
                         <a href="{% url 'base:room' room.id %}"> {{ room.name }} </a>
                         <br>
@@ -45,15 +44,18 @@
                         <br>
                         <small>
                             Topic : {{ room.topic.name }}
-                            <em>
-                                <a href="{% url 'base:update-room' room.id %}">Edit</a>
-                            </em>
-                            <!-- Let's enter the delete button -->
-                            <a href="{% url 'base:delete-room' room.id %}">Delete</a>
-                            <hr>
+                            <!-- If user is not the host, edit and delete button will not be shown -->
+                            {% if request.user == room.host %}
+                                <em>
+                                    <a href="{% url 'base:update-room' room.id %}">Edit</a>
+                                </em>
+                                <!-- Let's enter the delete button -->
+                                <a href="{% url 'base:delete-room' room.id %}">Delete</a>
+                                <hr>
+                            {% endif %}
+                            
                         </small>
                     </div>
-
                 {% endfor %}    
             {% else %}
                 <h1>No Room has been added</h1>

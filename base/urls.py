@@ -15,5 +15,7 @@ urlpatterns = [
     # ex: /base/delete-roon/1
     path('delete-room/<str:pk>', view=views.deleteRoom, name='delete-room'),
     # ex: base/login
-    path('login/', view=views.loginPage, name='login')
+    path('login/', view=views.loginPage, name='login'),
+    # ex: base/logout
+    path('logout/', view=views.logoutUser, name='logout')
 ]

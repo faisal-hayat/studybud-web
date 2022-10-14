@@ -12,7 +12,7 @@
     <!-- Displaying the logout button -->
     {% if request.user.is_authenticated %}
         <!-- Display the logout button -->
-        <a href="{% url 'base:login' %}">Logout</a>    
+        <a href="{% url 'base:logout' %}">Logout</a>    
     {% else %}
         <a href="{% url 'base:login' %}">Login</a>
     {% endif %}
