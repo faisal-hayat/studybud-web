@@ -2,8 +2,64 @@
 
 <!-- Let's extends the block -->
 {% block content %}
-    
-    <!-- Let's show the name of the room and further details -->
-    <h1>{{ room.name }}</h1>
+
+    <div class="room-container">
+        <div>
+            
+            <!-- Let's show the name of the room and further details -->
+            <h1>{{ room.name }}</h1>
+            
+            <!-- Let's add the room description -->
+            {% if room.description %}
+                <p>Description: {{ room.description }}</p>
+            {% endif %}
+            
+            <!-- Adding div for commenst -->
+            <div class="comment-wrapper">
+                <h3>
+                    Conversation
+                </h3>
+                <hr>
+                <!-- Iterate over all the messages -->
+                {% for message in room_messages %}
+                    <div>
+                        <!-- Only the owner can delete the comment -->
+                        {% if request.user == message.user %}
+                            <a href="{% url 'base:delete-message' message.id %}">Delete</a>
+                        {% endif %}
+                        
+                        <small>@{{ message.user }}  {{ message.created|timesince }} ago</small>
+                        <p>{{ message.body }}</p>
+                    </div>
+                {% endfor %} 
+
+            </div>
+            <!-- only authenticate user can enter message -->
+            <!-- div for commentin -->
+            {% if request.user.is_authenticated %}
+                <div class="comment-form">
+                    <form action="" method="POST">
+                        {% csrf_token %}
+
+                        <input type="text" name="body" placeholder="write your message here ...">
+                    </form>
+                </div>
+            {% endif %}
+        
+        </div>
+        <!-- Create div for participants -->
+        <div>
+            <h3>Participants</h3>
+            <hr> <!-- This is a line break -->
+            {% for user in participants %}
+                <div>
+                    <p>
+                        @{{ user.username }}
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+        
+    </div>
 
 {% endblock content %}

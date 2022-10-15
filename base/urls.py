@@ -20,5 +20,7 @@ urlpatterns = [
     # ex: base/logout
     path('logout/', view=views.logoutUser, name='logout'),
     # ex: base/register
-    path('register/', view=views.registerPage, name='register')
+    path('register/', view=views.registerPage, name='register'),
+    # ex: base/delete_message
+    path('delete-message/<str:pk>', view=views.delete_message, name='delete-message'),
 ]

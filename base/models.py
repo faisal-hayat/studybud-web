@@ -18,7 +18,9 @@ class Room(models.Model):
     updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
-    # participants = models
+    participants = models.ManyToManyField(User, 
+                                            related_name='participants',
+                                            blank=True)
 
     class Meta:
         ordering = ['-updated', '-created']
